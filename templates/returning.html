@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Returning patient{% endblock %}{% block content %}
+<div class="page-head"><div><h1>Returning patient</h1><p class="muted">Phone number (ya naam / ID) likhein - pura record aur naya token</p></div></div>
+<form class="card filters" method="get"><label>Phone / Name / Patient ID<input name="q" value="{{ q }}" placeholder="0300-1234567" autofocus></label><button class="btn btn-primary">Search</button></form>
+{% for r in res %}{% set p = r.p %}
+<section class="card"><div class="page-head"><div><h2>{{ p.name }} <span class="badge">{{ p.pid }}</span></h2>
+<p class="muted">{{ p.age_y }}y {{ p.age_m }}m &middot; {{ p.phone }} &middot; {{ p.address }}</p>
+<p>Total visits: <b>{{ r.vs|length }}</b> &nbsp; Total paid: <b>Rs. {{ '%.0f'|format(r.paid) }}</b></p></div>
+<a class="btn btn-primary btn-lg" href="/entry/opd?pid={{ p.pid }}">New OPD / appointment token</a></div>
+<div class="actions noprint">{% for k, v in MODULES.items() if k != 'opd' %}<a class="btn btn-sm" href="/entry/{{ k }}?pid={{ p.pid }}">{{ v }}</a>{% endfor %}<a class="btn btn-sm" href="/store/sale?pid={{ p.pid }}">Medical store</a><a class="btn btn-sm btn-primary" href="/patient/{{ p.id }}/record">Print full record (A4)</a></div>
+<div class="scroll"><table class="tbl"><tr><th>Date</th><th>Module</th><th>Tok</th><th>Doctor</th><th>Details</th><th>Total</th><th></th></tr>
+{% for v in r.vs %}<tr><td>{{ v.vdate }}</td><td>{{ MODULES[v.module] }}</td><td>{{ v.token_no }}</td><td>{{ v.doctor_name }}</td><td>{{ v.tests or v.op_type }}</td><td>{{ '%.0f'|format(v.total) }}</td><td><a class="btn btn-sm" href="/token/{{ v.id }}">Token</a> <a class="btn btn-sm" href="/memo/{{ v.id }}">Memo</a></td></tr>
+{% else %}<tr><td colspan="7" class="muted">No visits yet.</td></tr>{% endfor %}</table></div></section>
+{% else %}{% if q %}<div class="card"><p>Koi patient nahi mila. <a href="/entry/opd"><u>Naya patient register karein</u></a></p></div>{% endif %}{% endfor %}
+{% endblock %}

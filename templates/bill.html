@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Bill #{{ s.bill_no }}{% endblock %}
+{% block head %}<style>@page{size:A4;margin:10mm}</style>{% endblock %}
+{% block content %}
+<div class="page-head noprint"><div><h1>Medical store - cash memo</h1><p class="muted">Check karke print karein</p></div>
+<div class="actions"><button class="btn btn-primary btn-lg" onclick="window.print()">Print cash memo</button><a class="btn" href="/store/sale">New sale</a><a class="btn" href="/store/sales">Sales record</a></div></div>
+<div class="memo"><div class="m-head"><img src="/static/img/logo.png" width="64" height="64" alt=""><div><h2>Shifa Medical Centre</h2><p>Civil Hospital Road, Khairpur Mirs</p><p>Ph: 0300-2989753</p></div><div class="m-title">CASH MEMO<br><small>Medical Store</small></div></div>
+<div class="m-meta"><span>Bill # {{ s.bill_no }}</span><span>Date: {{ s.sdate }}</span></div>
+<table class="m-info"><tr><td>Customer</td><td>{{ s.customer }}</td><td>Phone</td><td>{{ s.phone }}</td></tr></table>
+<table class="m-items"><tr><th style="width:36px">#</th><th>Medicine</th><th class="r" style="width:60px">Qty</th><th class="r" style="width:80px">Rate</th><th class="r" style="width:100px">Amount</th></tr>
+{% for i in items %}<tr><td>{{ loop.index }}</td><td>{{ i.name }}</td><td class="r">{{ '%.0f'|format(i.qty) }}</td><td class="r">{{ '%.0f'|format(i.price) }}</td><td class="r">{{ '%.0f'|format(i.qty * i.price) }}</td></tr>{% endfor %}</table>
+<table class="m-tot"><tr><td>Sub total</td><td class="r">Rs. {{ '%.0f'|format(s.subtotal) }}</td></tr><tr><td>Discount</td><td class="r">Rs. {{ '%.0f'|format(s.discount) }}</td></tr>
+<tr class="g"><td>Total</td><td class="r">Rs. {{ '%.0f'|format(s.total) }}</td></tr></table>
+<div class="m-sign"><span>Customer</span><span>Cashier ({{ s.created_by }})</span></div>
+<div class="m-foot">Allah shifa de - Dawai wapis ya tabdeel nahi hogi - {{ s.created_at }}</div></div>
+{% endblock %}{% block js %}{% if request.args.get('print') %}<script>setTimeout(function(){window.print()},800)</script>{% endif %}{% endblock %}

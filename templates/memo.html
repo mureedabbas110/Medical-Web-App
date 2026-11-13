@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% block title %}Cash memo{% endblock %}
+{% block head %}<style>@page{size:A4;margin:10mm}</style>{% endblock %}
+{% block content %}
+<div class="page-head noprint"><div><h1>Cash memo</h1><p class="muted" id="pstat">Check karke print karein (A4 / cash memo printer)</p></div>
+<div class="actions"><button class="btn btn-primary btn-lg" onclick="window.print()">Print cash memo</button><a class="btn" href="/token/{{ v.id }}">Token</a><a class="btn" href="/entry/{{ v.module }}">New entry</a></div></div>
+<div class="memo"><div class="m-head"><img src="/static/img/logo.png" width="64" height="64" alt=""><div><h2>Shifa Medical Centre</h2><p>Civil Hospital Road, Khairpur Mirs</p><p>Ph: 0300-2989753</p></div><div class="m-title">CASH MEMO</div></div>
+<div class="m-meta"><span>Memo # M-{{ '%06d'|format(v.id) }}</span><span>Date: {{ v.vdate }}</span><span>{{ label }} - Token {{ v.token_no }}</span></div>
+<table class="m-info"><tr><td>Patient</td><td>{{ v.name }} ({{ v.pid }})</td><td>Age</td><td>{{ v.age_y }}y {{ v.age_m }}m</td></tr>
+<tr><td>Doctor</td><td>{{ v.doctor_name }}</td><td>Phone</td><td>{{ v.phone }}</td></tr>
+<tr><td>Address</td><td>{{ v.address }}</td><td>Referred by</td><td>{{ v.referred_by }}</td></tr></table>
+<table class="m-items"><tr><th style="width:36px">#</th><th>Particulars</th><th class="r" style="width:120px">Amount (Rs.)</th></tr>
+{% for d, amt in lines %}<tr><td>{{ loop.index }}</td><td>{{ d }}</td><td class="r">{{ '%.0f'|format(amt) }}</td></tr>{% endfor %}</table>
+<table class="m-tot"><tr><td>Sub total</td><td class="r">Rs. {{ '%.0f'|format(gross) }}</td></tr><tr><td>Discount</td><td class="r">Rs. {{ '%.0f'|format(v.discount) }}</td></tr>
+<tr class="g"><td>Total</td><td class="r">Rs. {{ '%.0f'|format(v.total) }}</td></tr>
+{% if v.module=='ot' %}<tr><td>Advance paid</td><td class="r">Rs. {{ '%.0f'|format(v.advance) }}</td></tr><tr class="g"><td>Balance due</td><td class="r">Rs. {{ '%.0f'|format(v.total - v.advance) }}</td></tr>{% endif %}</table>
+<div class="m-sign"><span>Patient / Receiver</span><span>Cashier ({{ v.created_by }})</span></div>
+<div class="m-foot">Computer generated cash memo - {{ v.created_at }}</div></div>
+{% endblock %}
+{% block js %}{% if request.args.get('print') %}<script>
+var st=document.getElementById('pstat');
+function go(){setTimeout(function(){window.print()},700)}
+{% if request.args.get('token') %}fetch('/token/{{ v.id }}/thermal',{method:'POST'}).then(function(r){return r.json()}).then(function(r){
+  st.textContent=r.ok?'Token thermal printer par gaya.':'Token print nahi hua: '+r.msg; go();}).catch(function(){go()});
+{% else %}go();{% endif %}
+</script>{% endif %}{% endblock %}

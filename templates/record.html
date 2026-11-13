@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Patient record{% endblock %}
+{% block head %}<style>@page{size:A4;margin:10mm}</style>{% endblock %}
+{% block content %}
+<div class="page-head noprint"><div><h1>Patient record (A4)</h1></div><div class="actions"><button class="btn btn-primary btn-lg" onclick="window.print()">Print A4</button><a class="btn" href="/returning?q={{ p.pid }}">Back</a></div></div>
+<div class="sheet"><div class="m-head"><img src="/static/img/logo.png" width="64" height="64" alt=""><div><h2>Shifa Medical Centre</h2><p>Civil Hospital Road, Khairpur Mirs</p><p>Ph: 0300-2989753</p></div><div class="m-title">PATIENT RECORD</div></div>
+<table class="m-info"><tr><td>Name</td><td>{{ p.name }}</td><td>Patient ID</td><td>{{ p.pid }}</td></tr>
+<tr><td>Age</td><td>{{ p.age_y }}y {{ p.age_m }}m</td><td>Phone</td><td>{{ p.phone }}</td></tr><tr><td>Address</td><td colspan="3">{{ p.address }}</td></tr></table>
+<table class="m-items"><tr><th>#</th><th>Date</th><th>Type</th><th>Tok</th><th>Doctor</th><th>Details</th><th class="r">Amount</th></tr>
+{% for v in vs %}<tr><td>{{ loop.index }}</td><td>{{ v.vdate }}</td><td>{{ MODULES[v.module] }}</td><td>{{ v.token_no }}</td><td>{{ v.doctor_name }}</td><td>{{ v.tests or v.op_type }}{% if v.notes %}<br><small>{{ v.notes }}</small>{% endif %}</td><td class="r">{{ '%.0f'|format(v.total) }}</td></tr>
+{% else %}<tr><td colspan="7">No visits.</td></tr>{% endfor %}
+<tr><td colspan="6" class="r"><b>Total visits {{ vs|length }} - Total paid</b></td><td class="r"><b>{{ '%.0f'|format(net) }}</b></td></tr></table>
+<div class="m-foot">Printed on {{ today }} - Shifa Medical Centre</div></div>
+{% endblock %}

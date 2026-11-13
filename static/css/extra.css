@@ -1,0 +1,35 @@
+.card label,.filters label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600}
+.card input,.card select{padding:9px 10px;border:1px solid #cfd6dd;border-radius:8px;font:inherit;background:#fff;min-width:0}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.wide{grid-column:1/-1}
+.tests{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.card label.chk{flex-direction:row;align-items:center;gap:8px;border:1px solid #e2e6ea;border-radius:8px;padding:8px;font-weight:500}
+.chk b{margin-left:auto}.total{font-size:20px}.actions{display:flex;gap:10px;flex-wrap:wrap}
+.filters{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}.tbl th,.tbl td{padding:8px;border-bottom:1px solid #e5e8eb;text-align:left;vertical-align:top}
+.scroll{overflow-x:auto}.inline{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.inline input,.inline select{padding:8px}
+.btn-sm{padding:5px 10px;font-size:13px}.btn-danger{background:#c0392b;color:#fff;border:0}
+.badge{background:#e3f6ea;color:#17703a;border-radius:10px;padding:2px 8px;font-size:12px}
+.toast.err{background:#fdecea;color:#8a1c12;padding:10px;border-radius:8px;margin-bottom:8px}.toast.ok{background:#e3f6ea;color:#17703a;padding:10px;border-radius:8px;margin-bottom:8px}
+.login{max-width:360px;margin:12vh auto;display:flex;flex-direction:column;gap:14px;padding:24px}
+.token{width:300px;margin:0 auto;background:#fff;border:1px dashed #888;padding:14px;font-family:monospace;font-size:13px;color:#000}
+.t-head{text-align:center}.t-head small{display:block}.t-head img{display:block;margin:0 auto 4px}.t-head strong{display:block;font-size:17px}.t-mod{text-align:center;font-weight:700;margin-top:6px;border-top:1px solid #000;border-bottom:1px solid #000;padding:3px}
+.t-no{text-align:center;font-size:24px;font-weight:700;margin:8px 0}.token table{width:100%}.token td{padding:2px 0;vertical-align:top}.token td:first-child{width:38%;font-weight:700}
+.t-tot td{border-top:1px solid #000;font-size:16px;font-weight:700}.t-foot{text-align:center;margin-top:8px;font-size:11px}
+.onlyprint{display:none}
+@media print{.sidebar,.topbar,.noprint,.toasts,.scrim{display:none!important}.onlyprint{display:block}
+.app,.main{display:block!important;margin:0!important;padding:0!important}.token{border:0;width:72mm;margin:0;padding:2mm;font-size:12px}html,body{background:#fff!important}}
+
+.badge.red{background:#fdecea;color:#8a1c12}.badge.amber{background:#fff4d6;color:#7a5200}.badge{margin-right:4px}
+.hit-box{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#eef5fd;border:1px solid #bcd3ee;border-radius:8px;padding:10px}#hits:empty{display:none}
+.tbl .inline input{width:84px}.token .items{margin:6px 0}.token .items td{font-weight:400;border-bottom:1px dotted #999}.token .items td:first-child{width:auto}
+
+.memo,.sheet{background:#fff;color:#000;border:1px solid #999;padding:10mm;max-width:800px;margin:0 auto 20px;font-size:13px}
+.m-head{display:flex;align-items:center;gap:12px;border-bottom:2px solid #000;padding-bottom:8px}.m-head h2{margin:0;font-size:22px}.m-head p{margin:2px 0}
+.m-title{margin-left:auto;font-size:18px;font-weight:700;border:2px solid #000;padding:4px 10px;white-space:nowrap}
+.m-meta{display:flex;justify-content:space-between;flex-wrap:wrap;margin:8px 0;font-weight:600}
+.m-info{width:100%;border-collapse:collapse;margin-bottom:8px}.m-info td{padding:3px 4px;vertical-align:top}.m-info td:nth-child(odd){font-weight:700;width:14%}
+.m-items{width:100%;border-collapse:collapse}.m-items th,.m-items td{border:1px solid #000;padding:5px 8px;text-align:left;vertical-align:top}.m-items .r{text-align:right}
+.m-tot{margin-left:auto;width:55%;border-collapse:collapse;margin-top:6px}.m-tot td{padding:3px 8px;border-bottom:1px solid #999}.m-tot tr.g td{font-weight:700;font-size:15px;border:2px solid #000}
+.m-sign{display:flex;justify-content:space-between;margin-top:30px}.m-sign span{border-top:1px solid #000;padding-top:3px;min-width:150px;text-align:center}
+.m-foot{text-align:center;font-size:11px;margin-top:10px}
+@media print{.memo,.sheet{border:0;max-width:none;margin:0;padding:0}}

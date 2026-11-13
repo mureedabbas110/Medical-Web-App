@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Patients{% endblock %}{% block content %}
+<div class="page-head"><div><h1>Patients</h1><p class="muted">Every patient with full visit history</p></div></div>
+<form class="card filters" method="get"><label>Search<input name="q" value="{{ request.args.get('q','') }}" placeholder="Name / ID / phone"></label><button class="btn btn-primary">Search</button></form>
+<div class="card scroll"><table class="tbl"><tr><th>ID</th><th>Name</th><th>Age</th><th>Phone</th><th>Address</th><th>Visits</th><th>Paid</th><th></th></tr>
+{% for p in ps %}<tr><td>{{ p.pid }}</td><td>{{ p.name }}</td><td>{{ p.age_y }}y {{ p.age_m }}m</td><td>{{ p.phone }}</td><td>{{ p.address }}</td><td>{{ p.visits }}</td><td>{{ '%.0f'|format(p.paid) }}</td>
+<td><a class="btn btn-sm" href="/patient/{{ p.id }}/record">Record (A4)</a> {% if session.role=='admin' %}<a class="btn btn-sm" href="/history?patient={{ p.id }}">History</a>{% endif %}</td></tr>
+{% else %}<tr><td colspan="8" class="muted">No patients.</td></tr>{% endfor %}</table></div>{% endblock %}

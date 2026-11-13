@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Reports{% endblock %}{% block content %}
+<div class="page-head noprint"><div><h1>Reports</h1><p class="muted">{{ fr }} to {{ to }}</p></div><button class="btn" onclick="window.print()">Print</button></div>
+<form class="card filters noprint" method="get"><label>From<input type="date" name="from" value="{{ fr }}"></label><label>To<input type="date" name="to" value="{{ to }}"></label>
+<label>Report after patients<input type="number" name="batch" value="{{ batch }}" min="1"></label><button class="btn btn-primary">Show</button></form>
+<div class="stats"><div class="stat"><span class="stat-label">Total tokens</span><strong class="stat-num">{{ tot.n }}</strong></div>
+<div class="stat stat-hero"><span class="stat-label">Total amount</span><strong class="stat-num">Rs. {{ '%.0f'|format(tot.net) }}</strong></div></div>
+<section class="card"><h2>Medical store</h2><p>Bills: <b>{{ stt.n }}</b> &nbsp; Sales: <b>Rs. {{ '%.0f'|format(stt.t) }}</b> &nbsp; Profit: <b>Rs. {{ '%.0f'|format(stt.p) }}</b></p></section>
+<section class="card scroll"><h2>Doctor-wise report</h2><table class="tbl"><tr><th>Doctor</th><th>Patients</th><th>Operations</th><th>Fees</th><th>Discount</th><th>Net amount</th><th></th></tr>
+{% for d in docs %}<tr><td>{{ d.doctor_name }}</td><td>{{ d.n }} {% if d.n >= batch %}<span class="badge">{{ batch }}+ done</span>{% endif %}</td>
+<td>{{ d.ops }}</td><td>{{ '%.0f'|format(d.fee) }}</td><td>{{ '%.0f'|format(d.disc) }}</td><td><b>{{ '%.0f'|format(d.net) }}</b></td>
+<td class="noprint"><a class="btn btn-sm" href="/history?doctor={{ d.doctor_name|urlencode }}&from={{ fr }}&to={{ to }}">Full record</a></td></tr>
+{% else %}<tr><td colspan="7" class="muted">No data.</td></tr>{% endfor %}</table></section>
+<section class="card scroll"><h2>Module-wise report</h2><table class="tbl"><tr><th>Module</th><th>Patients</th><th>Fees</th><th>Discount</th><th>Net</th></tr>
+{% for m in mods %}<tr><td>{{ MODULES[m.module] }}</td><td>{{ m.n }}</td><td>{{ '%.0f'|format(m.fee) }}</td><td>{{ '%.0f'|format(m.disc) }}</td><td>{{ '%.0f'|format(m.net) }}</td></tr>{% endfor %}</table></section>
+<section class="card scroll"><h2>Operation-wise report (C-Section, Delivery, Orthopedic, Surgery)</h2><table class="tbl"><tr><th>Operation</th><th>Count</th><th>Amount</th></tr>
+{% for o in opsr %}<tr><td>{{ o.op_type }}</td><td>{{ o.n }}</td><td>{{ '%.0f'|format(o.net) }}</td></tr>{% else %}<tr><td colspan="3" class="muted">No operations in this period.</td></tr>{% endfor %}</table></section>
+{% endblock %}

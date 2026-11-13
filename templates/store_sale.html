@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Store sale{% endblock %}{% block content %}{% set p = pre or {} %}
+<div class="page-head"><div><h1>Medical Store - New sale</h1><p class="muted">Medicine chunein aur quantity likhein</p></div></div>
+<form method="post" class="card" id="saleForm">
+<div class="form-grid"><label>Customer / patient name<input name="customer" value="{{ p.get('name','') }}"></label>
+<label>Phone<input name="phone" value="{{ p.get('phone','') }}"></label></div>
+<div class="scroll"><table class="tbl"><thead><tr><th>Medicine</th><th>Qty</th><th>Price</th><th>Amount</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+<p><button type="button" class="btn" id="addRow">+ Add medicine</button></p>
+<div class="form-grid"><label>Discount<input type="number" min="0" step="any" name="discount" id="discount" value="0"></label></div>
+<p class="total">Subtotal: <b id="sub">Rs. 0</b> &nbsp; Total: <strong id="total">Rs. 0</strong></p>
+<div class="actions"><button class="btn" name="action" value="save">Save</button><button class="btn btn-primary" name="action" value="print">Save and Print Cash Memo</button></div></form>
+{% endblock %}{% block js %}<script>var MEDS={{ meds|tojson }};</script><script src="/static/js/store.js"></script>{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Store sales{% endblock %}{% block content %}
+<div class="page-head noprint"><div><h1>Store sales record</h1><p class="muted">{{ 'All bills' if session.role=='admin' else "Today's bills" }}</p></div><button class="btn" onclick="window.print()">Print report</button></div>
+<form class="card filters noprint" method="get">{% if session.role=='admin' %}<label>From<input type="date" name="from" value="{{ a.get('from','') }}"></label><label>To<input type="date" name="to" value="{{ a.get('to','') }}"></label>{% endif %}
+<label>Search<input name="q" value="{{ a.get('q','') }}" placeholder="Name / phone"></label><button class="btn btn-primary">Filter</button></form>
+<div class="stats"><div class="stat"><span class="stat-label">Bills</span><strong class="stat-num">{{ tot.n }}</strong></div>
+<div class="stat stat-hero"><span class="stat-label">Total sales</span><strong class="stat-num">Rs. {{ '%.0f'|format(tot.t) }}</strong></div>
+{% if session.role=='admin' %}<div class="stat"><span class="stat-label">Profit</span><strong class="stat-num">Rs. {{ '%.0f'|format(tot.pr) }}</strong></div>{% endif %}</div>
+<div class="card scroll"><table class="tbl"><tr><th>Date</th><th>Bill</th><th>Customer</th><th>Items</th><th>Disc</th><th>Total</th>{% if session.role=='admin' %}<th>Profit</th>{% endif %}<th class="noprint"></th></tr>
+{% for s in rows %}<tr><td>{{ s.sdate }}</td><td>{{ s.bill_no }}</td><td>{{ s.customer }}<br><small>{{ s.phone }}</small></td><td>{{ s['items'] }}</td><td>{{ '%.0f'|format(s.discount) }}</td><td><b>{{ '%.0f'|format(s.total) }}</b></td>{% if session.role=='admin' %}<td>{{ '%.0f'|format(s.profit) }}</td>{% endif %}
+<td class="noprint"><a class="btn btn-sm" href="/store/bill/{{ s.id }}?print=1">Print</a>{% if session.role=='admin' %}<form method="post" action="/store/sale/{{ s.id }}/delete" style="display:inline" onsubmit="return confirm('Bill delete hoga aur stock wapis aayega. Pakka?')"><button class="btn btn-sm btn-danger">Delete</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="8" class="muted">No bills.</td></tr>{% endfor %}</table></div>{% endblock %}

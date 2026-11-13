@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block title %}Settings{% endblock %}{% block content %}
+<div class="page-head"><div><h1>Settings (Admin)</h1></div></div>
+<section class="card"><h2>Thermal printer (sirf token)</h2><p class="muted">Token isi printer par chhapega. Cash memo aur A4 pages normal printer par.</p>
+<form method="post" class="inline"><input type="hidden" name="action" value="set_printer">
+{% if printers %}<select name="printer"><option value="">-- select printer --</option>{% for p in printers %}<option {{ 'selected' if p==cur }}>{{ p }}</option>{% endfor %}</select>
+{% else %}<input name="printer" value="{{ cur }}" placeholder="Printer ka naam (Windows jaisa)" style="min-width:260px">{% endif %}
+<button class="btn btn-primary">Save printer</button></form>
+<form method="post" class="inline"><input type="hidden" name="action" value="test_printer"><button class="btn">Test print</button></form></section>
+<section class="card"><h2>Doctors</h2><table class="tbl"><tr><th>Name</th><th>Fee</th><th></th></tr>
+{% for d in doctors %}<tr><td>{{ d.name }}</td><td><form method="post" class="inline"><input type="hidden" name="action" value="upd_doctor"><input type="hidden" name="id" value="{{ d.id }}"><input type="number" name="fee" value="{{ '%.0f'|format(d.fee) }}"><button class="btn btn-sm">Update</button></form></td>
+<td><form method="post" onsubmit="return confirm('Delete doctor?')"><input type="hidden" name="action" value="del_doctor"><input type="hidden" name="id" value="{{ d.id }}"><button class="btn btn-sm btn-danger">Delete</button></form></td></tr>{% endfor %}</table>
+<form method="post" class="inline"><input type="hidden" name="action" value="add_doctor"><input name="name" placeholder="Doctor name" required><input type="number" name="fee" placeholder="Fee" value="500"><button class="btn btn-primary">Add doctor</button></form></section>
+<section class="card"><h2>Laboratory tests</h2><table class="tbl"><tr><th>Test</th><th>Price</th><th></th></tr>
+{% for t in tests %}<tr><td>{{ t.name }}</td><td>{{ '%.0f'|format(t.price) }}</td><td><form method="post"><input type="hidden" name="action" value="del_test"><input type="hidden" name="id" value="{{ t.id }}"><button class="btn btn-sm btn-danger">Delete</button></form></td></tr>{% endfor %}</table>
+<form method="post" class="inline"><input type="hidden" name="action" value="add_test"><input name="name" placeholder="Test name" required><input type="number" name="price" placeholder="Price" required><button class="btn btn-primary">Add test</button></form></section>
+<section class="card"><h2>Operations (OT price list)</h2><table class="tbl"><tr><th>Operation</th><th>Type</th><th>Price</th><th></th></tr>
+{% for o in ops %}<tr><td>{{ o.name }}</td><td>{{ o.category }}</td><td><form method="post" class="inline"><input type="hidden" name="action" value="upd_op"><input type="hidden" name="id" value="{{ o.id }}"><input type="number" name="price" value="{{ '%.0f'|format(o.price) }}"><button class="btn btn-sm">Update</button></form></td>
+<td><form method="post" onsubmit="return confirm('Delete operation?')"><input type="hidden" name="action" value="del_op"><input type="hidden" name="id" value="{{ o.id }}"><button class="btn btn-sm btn-danger">Delete</button></form></td></tr>{% endfor %}</table>
+<form method="post" class="inline"><input type="hidden" name="action" value="add_op"><input name="name" placeholder="Operation name" required><select name="category"><option>Gynae</option><option>Orthopedic</option><option>Surgery</option><option>Other</option></select><input type="number" name="price" placeholder="Price" required><button class="btn btn-primary">Add operation</button></form></section>
+<section class="card"><h2>Users</h2><table class="tbl"><tr><th>Username</th><th>Role</th><th></th></tr>
+{% for u in users %}<tr><td>{{ u.username }}</td><td>{{ u.role }}</td><td><form method="post" onsubmit="return confirm('Delete user?')"><input type="hidden" name="action" value="del_user"><input type="hidden" name="id" value="{{ u.id }}"><button class="btn btn-sm btn-danger">Delete</button></form></td></tr>{% endfor %}</table>
+<form method="post" class="inline"><input type="hidden" name="action" value="add_user"><input name="username" placeholder="Username" required><input name="password" type="password" placeholder="Password" required>
+<select name="role"><option value="user">User</option><option value="admin">Admin</option></select><button class="btn btn-primary">Add user</button></form></section>{% endblock %}

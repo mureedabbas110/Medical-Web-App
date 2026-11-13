@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% block title %}Token #{{ v.token_no }}{% endblock %}
+{% block head %}<style>@media print{html,body{width:80mm}}@page{margin:0}</style>{% endblock %}
+{% block content %}
+<div class="page-head noprint"><div><h1>Token</h1><p class="muted" id="pstat">Thermal printer par token chhapega</p></div>
+<div class="actions"><button class="btn btn-primary btn-lg" id="thermalBtn">Print token (thermal)</button><button class="btn" onclick="window.print()">Browser print (backup)</button>
+<a class="btn" href="/memo/{{ v.id }}">Cash memo</a><a class="btn" href="/entry/{{ v.module }}">New entry</a></div></div>
+<div class="token"><div class="t-head"><img src="/static/img/logo.png" width="56" height="56" alt=""><strong>Shifa Medical Centre</strong><small>Civil Hospital Road, Khairpur Mirs</small><small>Ph: 0300-2989753</small></div>
+<div class="t-mod">{{ label }}</div><div class="t-no">Token # {{ v.token_no }}</div>
+<table><tr><td>Date</td><td>{{ v.vdate }} {{ (v.created_at or '')[11:] }}</td></tr><tr><td>Patient ID</td><td>{{ v.pid }}</td></tr>
+{% if vn > 1 %}<tr><td>Visit</td><td>Follow-up #{{ vn }}</td></tr>{% endif %}
+<tr><td>Name</td><td>{{ v.name }}</td></tr><tr><td>Age</td><td>{{ v.age_y }}y {{ v.age_m }}m</td></tr>
+{% if v.doctor_name %}<tr><td>Doctor</td><td>{{ v.doctor_name }}</td></tr>{% endif %}
+{% if v.op_type %}<tr><td>Operation</td><td>{{ v.op_type }}</td></tr>{% endif %}
+{% if v.tests %}<tr><td>Tests</td><td>{{ v.tests }}</td></tr>{% endif %}</table>
+<div class="t-foot">Allah shifa de</div></div>
+{% endblock %}
+{% block js %}<script>
+var VID={{ v.id }}, st=document.getElementById('pstat');
+function thermal(){
+  st.textContent='Printer par bhej rahe hain...';
+  fetch('/token/'+VID+'/thermal',{method:'POST'}).then(function(r){return r.json()}).then(function(r){
+    st.textContent=r.ok?'Token thermal printer par bhej diya gaya.':'Print nahi hua: '+r.msg+' - "Browser print" istemal karein.';
+  }).catch(function(){st.textContent='Print nahi hua - "Browser print" istemal karein.'});
+}
+document.getElementById('thermalBtn').onclick=thermal;
+{% if request.args.get('print') %}thermal();{% endif %}
+</script>{% endblock %}

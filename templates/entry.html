@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% block title %}{{ label }}{% endblock %}{% block content %}{% set p = pre or {} %}
+<div class="page-head"><div><h1>{{ label }}</h1><p class="muted">Patient and fee details</p></div></div>
+<form method="post" class="card" id="entryForm" data-module="{{ module }}">
+<div class="form-grid">
+<label>Date<input type="date" name="vdate" value="{{ today }}" {{ '' if session.role=='admin' else 'readonly' }}></label>
+<label>Patient ID<input name="pid" id="pid" value="{{ p.get('pid','') }}" placeholder="Blank = new patient"></label>
+<label>Patient name<input name="name" id="name" value="{{ p.get('name','') }}" required></label>
+<label>Age (years)<input type="number" min="0" max="120" name="age_y" id="age_y" value="{{ p.get('age_y',0) }}"></label>
+<label>Age (months)<input type="number" min="0" max="11" name="age_m" id="age_m" value="{{ p.get('age_m',0) }}"></label>
+<label>Phone number<input name="phone" id="phone" inputmode="tel" value="{{ p.get('phone','') }}"></label>
+<div class="wide" id="hits"></div>
+<label class="wide">Address<input name="address" id="address" value="{{ p.get('address','') }}"></label>
+<label>Referred by<input name="referred_by"></label>
+<label>{{ 'OPD doctor name' if module=='opd' else ('Surgeon / operating doctor' if module=='ot' else 'Doctor (optional)') }}
+<select name="doctor_id" id="doctor" {{ 'required' if module in ('opd','ot') }}><option value="">-- select --</option>
+{% for d in doctors %}<option value="{{ d.id }}" data-fee="{{ d.fee }}">{{ d.name }}</option>{% endfor %}</select></label>
+{% if module == 'ot' %}<label class="wide">Operation<select name="op_id" id="op" required><option value="">-- select operation --</option>
+{% for o in ops %}<option value="{{ o.id }}" data-price="{{ o.price }}">{{ o.category }}: {{ o.name }}</option>{% endfor %}</select></label>{% endif %}
+{% if module != 'lab' %}<label>{{ 'Doctor fees' if module=='opd' else ('Operation charges' if module=='ot' else 'Fees') }}<input type="number" min="0" step="any" name="fee" id="fee" value="0"></label>{% endif %}
+{% if module == 'ot' %}<label>Room / ward charges<input type="number" min="0" step="any" name="room" id="room" value="0"></label>
+<label>Medicines / other charges<input type="number" min="0" step="any" name="other" id="other" value="0"></label>{% endif %}
+<label>Discount<input type="number" min="0" step="any" name="discount" id="discount" value="0"></label>
+{% if module == 'ot' %}<label>Advance paid<input type="number" min="0" step="any" name="advance" id="advance" value="0"></label>
+<label class="wide">Remarks<input name="notes"></label>{% endif %}
+</div>
+{% if module == 'lab' %}<h2>Laboratory tests</h2><input type="hidden" id="fee" value="0">
+<div class="tests">{% for t in tests %}<label class="chk"><input type="checkbox" name="tests" value="{{ t.id }}" data-price="{{ t.price }}"> {{ t.name }} <b>Rs. {{ '%.0f'|format(t.price) }}</b></label>{% endfor %}</div>{% endif %}
+<p class="total">Total: <strong id="total">Rs. 0</strong></p>
+{% if module == 'ot' %}<p class="total">Balance due: <strong id="balance">Rs. 0</strong></p>{% endif %}
+<div class="actions"><button class="btn" name="action" value="save">Save</button>
+<button class="btn btn-primary" name="action" value="token">Save and Print Token</button>
+<button class="btn btn-primary" name="action" value="both">Save, Token + Cash Memo</button>
+<button class="btn" type="reset">Clear</button></div>
+</form>{% endblock %}
+{% block js %}<script src="/static/js/entry.js"></script>{% endblock %}

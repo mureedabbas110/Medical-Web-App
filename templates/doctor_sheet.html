@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}Doctor sheet{% endblock %}
+{% block head %}<style>@page{size:A4;margin:10mm}</style>{% endblock %}
+{% block content %}
+<div class="page-head noprint"><div><h1>Doctor patient sheet (A4)</h1><p class="muted">Doctor ke patients ki list A4 page par print karein</p></div>{% if doc %}<button class="btn btn-primary btn-lg" onclick="window.print()">Print A4</button>{% endif %}</div>
+<form class="card filters noprint" method="get"><label>Doctor<select name="doctor" required><option value="">-- select --</option>{% for d in doctors %}<option {{ 'selected' if d.name==doc }}>{{ d.name }}</option>{% endfor %}</select></label>
+{% if session.role=='admin' %}<label>From<input type="date" name="from" value="{{ fr }}"></label><label>To<input type="date" name="to" value="{{ to }}"></label>{% endif %}<button class="btn btn-primary">Show</button></form>
+{% if doc %}<div class="sheet"><div class="m-head"><img src="/static/img/logo.png" width="64" height="64" alt=""><div><h2>Shifa Medical Centre</h2><p>Civil Hospital Road, Khairpur Mirs</p><p>Ph: 0300-2989753</p></div><div class="m-title">PATIENT LIST</div></div>
+<div class="m-meta"><span>{{ doc }}</span><span>{{ fr }}{{ ' to ' + to if to != fr }}</span><span>Patients: {{ tot.n }}</span></div>
+<table class="m-items"><tr><th>#</th><th>Date</th><th>Tok</th><th>Type</th><th>Patient</th><th>Age</th><th>Phone</th><th>Details</th><th class="r">Amount</th></tr>
+{% for v in rows %}<tr><td>{{ loop.index }}</td><td>{{ v.vdate }}</td><td>{{ v.token_no }}</td><td>{{ MODULES[v.module] }}</td><td>{{ v.name }}<br><small>{{ v.pid }}</small></td><td>{{ v.age_y }}y {{ v.age_m }}m</td><td>{{ v.phone }}</td><td>{{ v.tests or v.op_type }}</td><td class="r">{{ '%.0f'|format(v.total) }}</td></tr>
+{% else %}<tr><td colspan="9">Is doctor ka koi patient nahi mila.</td></tr>{% endfor %}
+<tr><td colspan="8" class="r"><b>Total patients {{ tot.n }} - Total amount</b></td><td class="r"><b>{{ '%.0f'|format(tot.net) }}</b></td></tr></table>
+<div class="m-foot">Printed on {{ today }} - Shifa Medical Centre</div></div>{% endif %}
+{% endblock %}

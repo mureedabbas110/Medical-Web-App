@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Medicines{% endblock %}{% block content %}
+<div class="page-head"><div><h1>Medicines / Stock</h1><p class="muted">{{ 'Admin: add, update, delete' if session.role=='admin' else 'Stock dekhne ke liye' }}</p></div></div>
+{% if session.role=='admin' %}<form method="post" class="card"><h2>Add medicine</h2><input type="hidden" name="action" value="add"><div class="form-grid">
+<label>Name<input name="name" required></label><label>Company<input name="company"></label><label>Stock (qty)<input type="number" min="0" name="stock" value="0"></label>
+<label>Buy price<input type="number" min="0" step="any" name="buy_price" value="0"></label><label>Sale price<input type="number" min="0" step="any" name="sell_price" value="0"></label>
+<label>Expiry<input type="date" name="expiry"></label><label>Low stock alert at<input type="number" min="0" name="min_stock" value="10"></label></div>
+<p><button class="btn btn-primary">Add medicine</button></p></form>{% endif %}
+<form class="card filters" method="get"><label>Search<input name="q" value="{{ request.args.get('q','') }}" placeholder="Medicine / company"></label><button class="btn btn-primary">Search</button></form>
+<div class="card scroll"><table class="tbl"><tr><th>Medicine</th><th>Stock</th>{% if session.role=='admin' %}<th>Buy</th>{% endif %}<th>Sale</th><th>Expiry</th><th>Status</th>{% if session.role=='admin' %}<th>Edit</th>{% endif %}</tr>
+{% for m in ms %}<tr><td>{{ m.name }}<br><small>{{ m.company }}</small></td><td><b>{{ '%.0f'|format(m.stock) }}</b></td>{% if session.role=='admin' %}<td>{{ '%.0f'|format(m.buy_price) }}</td>{% endif %}<td>{{ '%.0f'|format(m.sell_price) }}</td><td>{{ m.expiry }}</td>
+<td>{% if m.expiry and m.expiry < today %}<span class="badge red">Expired</span>{% elif m.expiry and m.expiry <= soon %}<span class="badge amber">Expiring</span>{% endif %}{% if m.stock <= m.min_stock %}<span class="badge amber">Low stock</span>{% endif %}</td>
+{% if session.role=='admin' %}<td><form method="post" class="inline"><input type="hidden" name="action" value="update"><input type="hidden" name="id" value="{{ m.id }}">
+<input type="number" step="any" name="buy_price" value="{{ '%.0f'|format(m.buy_price) }}" title="Buy"><input type="number" step="any" name="sell_price" value="{{ '%.0f'|format(m.sell_price) }}" title="Sale"><input type="date" name="expiry" value="{{ m.expiry }}"><input type="number" name="min_stock" value="{{ '%.0f'|format(m.min_stock) }}" title="Low stock alert"><button class="btn btn-sm">Save</button></form>
+<form method="post" class="inline"><input type="hidden" name="action" value="add_stock"><input type="hidden" name="id" value="{{ m.id }}"><input type="number" name="qty" min="1" placeholder="+ qty" required><button class="btn btn-sm btn-primary">Add stock</button></form>
+<form method="post" class="inline" onsubmit="return confirm('Delete medicine?')"><input type="hidden" name="action" value="del"><input type="hidden" name="id" value="{{ m.id }}"><button class="btn btn-sm btn-danger">Delete</button></form></td>{% endif %}</tr>
+{% else %}<tr><td colspan="7" class="muted">No medicines.</td></tr>{% endfor %}</table></div>{% endblock %}

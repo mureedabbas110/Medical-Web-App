@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block title %}Review{% endblock %}{% block content %}
+<div class="page-head noprint"><div><h1>Review / Records</h1><p class="muted">{{ 'All saved records' if session.role=='admin' else "Today's records" }}</p></div>
+<button class="btn" onclick="window.print()">Print report</button></div>
+<form class="card filters noprint" method="get">
+{% if session.role=='admin' %}<label>From<input type="date" name="from" value="{{ a.get('from','') }}"></label>
+<label>To<input type="date" name="to" value="{{ a.get('to','') }}"></label>
+<label>Doctor<select name="doctor"><option value="">All</option>{% for d in doctors %}<option {{ 'selected' if a.get('doctor')==d.name }}>{{ d.name }}</option>{% endfor %}</select></label>{% endif %}
+<label>Module<select name="module"><option value="">All</option>{% for k, v in MODULES.items() %}<option value="{{k}}" {{ 'selected' if a.get('module')==k }}>{{ v }}</option>{% endfor %}</select></label>
+<label>Search<input name="q" value="{{ a.get('q','') }}" placeholder="Name / ID / phone"></label>
+<input type="hidden" name="patient" value="{{ a.get('patient','') }}"><button class="btn btn-primary">Filter</button></form>
+<h2 class="onlyprint">{{ a.get('doctor','') }} {{ a.get('from','') }} {{ a.get('to','') }}</h2>
+<div class="stats"><div class="stat"><span class="stat-label">Patients</span><strong class="stat-num">{{ tot.n }}</strong></div>
+<div class="stat"><span class="stat-label">Fees / Discount</span><strong class="stat-date">{{ '%.0f'|format(tot.fee) }} / {{ '%.0f'|format(tot.disc) }}</strong></div>
+<div class="stat stat-hero"><span class="stat-label">Total amount</span><strong class="stat-num">Rs. {{ '%.0f'|format(tot.net) }}</strong></div></div>
+<div class="card scroll"><table class="tbl"><tr><th>Date</th><th>Module</th><th>Tok</th><th>Patient</th><th>Doctor</th><th>Tests</th><th>Fee</th><th>Disc</th><th>Total</th><th class="noprint"></th></tr>
+{% for v in vs %}<tr><td>{{ v.vdate }}</td><td>{{ MODULES[v.module] }}</td><td>{{ v.token_no }}</td><td>{{ v.name }}<br><small>{{ v.pid }}</small></td><td>{{ v.doctor_name }}</td><td>{{ v.tests or v.op_type }}</td>
+<td>{{ '%.0f'|format(v.fee) }}</td><td>{{ '%.0f'|format(v.discount) }}</td><td>{{ '%.0f'|format(v.total) }}{% if v.module=='ot' %}<br><small>Adv {{ '%.0f'|format(v.advance) }} / Bal {{ '%.0f'|format(v.total - v.advance) }}</small>{% endif %}</td>
+<td class="noprint"><a class="btn btn-sm" href="/token/{{ v.id }}?print=1">Token</a> <a class="btn btn-sm" href="/memo/{{ v.id }}">Memo</a>
+{% if session.role=='admin' %}<form method="post" action="/visit/{{ v.id }}/delete" style="display:inline" onsubmit="return confirm('Delete this record?')"><button class="btn btn-sm btn-danger">Delete</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="10" class="muted">No records found.</td></tr>{% endfor %}</table></div>{% endblock %}

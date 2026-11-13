@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block content %}
+<div class="page-head"><div><h1>Dashboard</h1><p class="muted">{{ today }}</p></div>
+<a class="btn btn-primary btn-lg" href="/entry/opd">New OPD token</a></div>
+<section class="stats">
+<div class="stat stat-hero"><span class="stat-label">Tokens today</span><strong class="stat-num">{{ stats.n }}</strong></div>
+<div class="stat"><span class="stat-label">Amount today</span><strong class="stat-num">Rs. {{ '%.0f'|format(stats.amt) }}</strong></div>
+<div class="stat"><span class="stat-label">Registered patients</span><strong class="stat-num">{{ pats }}</strong></div></section>
+<div class="cols">
+<section class="card"><h2>Patients and amount by doctor today</h2><ul class="bars">
+{% for d in docs %}<li><div class="bar-top"><span class="bar-name">{{ d.name }}</span><span class="bar-num">{{ d.n }} / Rs. {{ '%.0f'|format(d.amt) }}</span></div>
+<div class="bar"><span style="width: {{ (d.n / mx * 100)|round }}%"></span></div></li>{% endfor %}</ul></section>
+<section class="card"><h2>By module today</h2>
+<table class="tbl"><tr><th>Module</th><th>Tokens</th><th>Amount</th></tr>
+{% for k, v in MODULES.items() %}<tr><td>{{ v }}</td><td>{{ mods[k].n if k in mods else 0 }}</td><td>{{ '%.0f'|format(mods[k].amt) if k in mods else 0 }}</td></tr>{% endfor %}</table>
+<h2>Latest tokens</h2>
+{% for v in latest %}<p><a href="/token/{{ v.id }}">#{{ v.token_no }} {{ MODULES[v.module] }}</a> - {{ v.name }} - Rs. {{ '%.0f'|format(v.total) }}</p>
+{% else %}<p class="muted">No tokens yet today.</p>{% endfor %}</section><section class="card"><h2>Medical store today</h2>
+<p>Bills: <b>{{ st.n }}</b> &nbsp; Sales: <b>Rs. {{ '%.0f'|format(st.t) }}</b></p>
+<p>Low stock: <b>{{ low }}</b> &nbsp; Expiring / expired: <b>{{ soon }}</b> &nbsp; <a href="/store/medicines"><u>View stock</u></a></p></section>
+</div>
+{% endblock %}
